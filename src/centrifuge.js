@@ -901,7 +901,14 @@ centrifugeProto._messageResponse = function (message) {
     if (!sub) {
         return;
     }
-    sub.trigger('message', [body]);
+    if (body.data && body.data.event) {
+      var eventData   = mixin(false, {}, body.data),
+          eventString = body.data.event;
+      delete eventData.event;
+      sub.trigger(eventString, [eventData, body]);
+    }else{
+        sub.trigger('message', [body]);
+    }
 };
 
 centrifugeProto._refreshResponse = function (message) {
